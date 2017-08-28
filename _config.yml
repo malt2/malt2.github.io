@@ -10,8 +10,8 @@ permalink:        pretty
 title:           MALT-2 
 tagline:          'Distributed data-parallel machine learning'
 description:      'Data-parallel machine learning for Torch/MiLDE with CUDA/MPI with support for infiniBand and NVLINK.'
-url:              malt2.github.io/
-baseurl:          /
+url:              https://malt2.github.io/
+baseurl:          https://malt2.github.io/
 
 author:
   name:           'Asim Kadav, Erik Kruus'
