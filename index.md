@@ -4,7 +4,7 @@ title:
 order: 1
 ---
 
-<a href="http://138.15.166.21:4000/">MALT-2</a> is a distributed data-parallel 
+<a href="https://malt2.github.io">MALT-2</a> is a distributed data-parallel 
 machine learning system for  [Torch](http://torch.ch) and MiLDE.
 
 <center style="padding: 40px"><img width="80%" src="malt-overview.png" /></center>

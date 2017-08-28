@@ -11,8 +11,8 @@ over multiple GPUs.
 
 ### Existing Torch apps ported to MALT-2 
 
-* Linear regression using Torch ([lr.malt](https://nj-gitlab.nec-labs.com/asim/lr.malt))
-* Imagenet over GPUs with Torch ([fb.resnet.torch](https://nj-gitlab.nec-labs.com/asim/fb.resnet.malt))
+* Linear regression using Torch ([lr.malt](https://github.com/malt2/malt2.tutorials/tree/master/lr.malt))
+* Imagenet over GPUs with Torch ([fb.resnet.torch](https://github.com/malt2/malt2.tutorials/tree/master/fb.resnet.malt))
 * Action Recognition (art) (coming soon)
 * OpenNMT (coming soon)
 
