@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Applications &middot; MALT-2
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+                                 <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body class="theme-base-08">
+
+    <div class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          MALT-2
+        </a>
+      </h1>
+      <p class="lead">Data-parallel machine learning for Torch/MiLDE with CUDA/MPI with support for infiniBand and NVLINK.</p>
+    </div>
+
+    <nav class="sidebar-nav">
+     <a class="sidebar-nav-item" href="/">Home</a> 
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/guide/">Guide</a>
+          
+        
+      
+        
+      
+        
+          
+            <a class="sidebar-nav-item active" href="/lua-apps/">Applications</a>
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/qa/">FAQs</a>
+          
+        
+      
+
+      <!--<a class="sidebar-nav-item" href="http://github.com/malt2/malt2.github.io/archive/v2.0.1.zip">Examples</a> -->
+      <a class="sidebar-nav-item" href="https://github.com/malt2/malt2">github link</a>
+      <span class="sidebar-nav-item">Currently v2.0.1</span>
+    </nav>
+
+    <p>&copy; 2017. NEC Labs.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="page">
+  <h1 class="page-title">Applications</h1>
+  <p class="message">
+Porting your existing Torch applications to MALT-2 is very easy. In this section, we describe existing Torch
+apps that we've ported to run on MALT-2. We also describe how to port your existing code to MALT-2 to run 
+over multiple GPUs.
+</p>
+
+<h3>Existing Torch apps ported to MALT-2</h3>
+
+<ul>
+<li>Linear regression using Torch (<a href="https://nj-gitlab.nec-labs.com/asim/lr.malt">lr.malt</a>)</li>
+<li>Imagenet over GPUs with Torch (<a href="https://nj-gitlab.nec-labs.com/asim/fb.resnet.malt">fb.resnet.torch</a>)</li>
+<li>Action Recognition (art) (coming soon)</li>
+<li>OpenNMT (coming soon)</li>
+</ul>
+
+<h3>Parallelizing your existing Torch app</h3>
+
+<p>This section describes how to parallelize your existing app to support MALT-2.
+MALT-2 torch package overloads the optim package. It provides functions for
+distributed optimization as well as additional helper functions to split/permute
+data correctly on each replica.</p>
+
+<h4>Install MALT-2</h4>
+
+<ul>
+<li>Install MALT-2 for Torch/MiLDE as described <a href="../guide">here</a></li>
+</ul>
+
+<h4>Include the distoptim package</h4>
+
+<p>Simple add the dstoptim package in your training file.</p>
+
+<figure class="highlight"><pre><code class="language-lua" data-lang="lua"><span></span><span class="nb">require</span> <span class="s1">&#39;dstoptim&#39;</span></code></pre></figure>
+
+<p>Use the distributed SGD training procedure when calling optim. 
+E.g. replace &#39;sgd&#39; or &#39;adam&#39; with &#39;dstsgd&#39; in your code as:</p>
+
+<figure class="highlight"><pre><code class="language-lua" data-lang="lua"><span></span><span class="n">optim</span><span class="p">.</span><span class="n">dstsgd</span> <span class="p">(</span><span class="n">optimeval</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">optimparams</span><span class="p">)</span></code></pre></figure>
+
+<p>No other changes are required to communicate or average the parameters.
+The optimizer in dstsgd takes care of communicating and averaging the
+parallel models. However, one may require to permute/split the data on
+each machine differently to ensure that each replica is not processing
+the same inputs.</p>
+
+<h4>Controlling other distributed SGD options</h4>
+
+<p>Other options to modify SGD and malt-2 behavior can be controlled by
+passing options (similar to passing options to the optimizer). As an example,
+one may add the following lines to their code:</p>
+
+<figure class="highlight"><pre><code class="language-lua" data-lang="lua"><span></span><span class="n">optimparams</span><span class="p">.</span><span class="n">cuda</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="n">optimparams</span><span class="p">.</span><span class="n">transport</span> <span class="o">=</span> <span class="s1">&#39;gpu&#39;</span> </code></pre></figure>
+
+<p>where optimparams is the optimization parameters passed using the optim api.
+The other possible options for parameters with default values first are below:</p>
+
+<figure class="highlight"><pre><code class="language-lua" data-lang="lua"><span></span><span class="n">optimparams</span><span class="p">.</span><span class="n">cuda</span>      <span class="o">=</span> <span class="kc">true</span> <span class="o">|</span> <span class="kc">false</span>
+<span class="n">optimparams</span><span class="p">.</span><span class="n">transport</span> <span class="o">=</span> <span class="s1">&#39;gpu&#39;</span> <span class="o">|</span> <span class="s1">&#39;mpi&#39;</span> 
+<span class="n">optimparams</span><span class="p">.</span><span class="n">debug</span>     <span class="o">=</span> <span class="kc">false</span> <span class="o">|</span> <span class="kc">true</span>
+<span class="n">optimparams</span><span class="p">.</span><span class="n">cb_size</span>   <span class="o">=</span>    <span class="mi">5</span>  <span class="o">|</span> <span class="n">any</span> <span class="n">number</span> <span class="n">greater</span> <span class="n">than</span> <span class="mi">0</span></code></pre></figure>
+
+<h4>Permute/Split the input data</h4>
+
+<p>In order to make sure each parallel replica processes random split, 
+MALT-2 provides function to accomplish this in your existing code.
+E.g. Instead of using <code>torch.randperm (tensor)</code> use <code>optim.randperm(tensor)</code>.
+This function has the same semantics as <code>torch.randperm()</code> but uses different
+manual seed on each replicas to ensure that each replica do not do the same work.</p>
+
+<p>Additionally, MALT-2 also provides <code>optim.nProc()</code> that returns the number of 
+concurrent replicas. This is useful to split the data across replicas. See the
+fb.resnet.lua for examples of how this is accomplished (see train.lua).</p>
+
+</div>
+
+    </div>
+
+  </body>
+</html>

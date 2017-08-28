@@ -1,0 +1,31 @@
+# Dependencies
+markdown:         redcarpet
+highlighter:      pygments
+
+# Permalinks
+permalink:        pretty
+#relative_permalinks: true
+
+# Setup
+title:           MALT-2 
+tagline:          'Distributed data-parallel machine learning'
+description:      'Data-parallel machine learning for Torch/MiLDE with CUDA/MPI with support for infiniBand and NVLINK.'
+url:              malt2.github.io
+baseurl:          /
+
+author:
+  name:           'Asim Kadav, Erik Kruus'
+  url:            https://www.nec-labs.com/~asim
+
+paginate:         5
+
+# Custom vars
+version:          2.0.1
+
+github:
+    repo:        http://github.com/malt2/malt2.github.io
+
+# Gems
+gems:
+  - jekyll-paginate
+  - jekyll-gist
