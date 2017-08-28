@@ -109,24 +109,24 @@ require "malt2"
 * With MPI, then you'll need to run via mpirun, perhaps something like:
 
 {% highlight Bash %}
-mpirun -np 3 `which th` `pwd -P`/test.lua mpi 2>&1 | tee test-mpi.log
+mpirun -np 2 `which th` `pwd -P`/test.lua mpi 2>&1 | tee test-mpi.log
 {% endhighlight %}
 
 * if GPU,
 
 {% highlight Bash %}
-mpirun -np 3 `which th` `pwd -P`/test.lua gpu 2>&1 | tee test-GPU-gpu.log
+mpirun -np 2 `which th` `pwd -P`/test.lua gpu 2>&1 | tee test-GPU-gpu.log
 {% endhighlight %}
 
 * NEW: a `WITH_GPU` compile can also run with MPI transport
 
 {% highlight Bash %}
-mpirun -np 3 `which th` `pwd -P`/test.lua mpi 2>&1 | tee test-GPU-mpi.log
+mpirun -np 2 `which th` `pwd -P`/test.lua mpi 2>&1 | tee test-GPU-mpi.log
 {% endhighlight %}
 
 default transport is set to the "highest" built into libdstorm2: GPU > MPI  > SHM
 {% highlight Bash %}
-mpirun -np 3 `which th` `pwd -P`/test.lua 2>&1 | tee test-best.log
+mpirun -np 2 `which th` `pwd -P`/test.lua 2>&1 | tee test-best.log
 {% endhighlight %}
 
 ### Running over multiple GPUs.
